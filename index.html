@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>My Solar Shop</title>
+    <link href="style.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="icon" href="images/favicon.ico">
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Your Main App -->
+    <script src="AppHandler.js" defer></script>
+
+    <base target="_blank">
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav>
+        <div id="page-heading">
+            <div class="nav-left">
+                <img alt="My Solar Shop" src="C:\Users\hp\Desktop\Final Solar Website Code\Solar website logo.jpg" class="logo">
+                <span class="brand-name">MySolarShop</span>
+            </div>
+            <div class="nav-right">
+                <div>
+                    <ul>
+                        <li class="active"><a href="index.html">Home</a></li>
+                        <li><a href="#product-container">Products</a></li>
+                        <li><a href="#hero-section">About</a></li>
+                        <li><a href="#">Services</a></li>
+                    </ul>
+                </div>
+
+                <!-- AUTH SECTION -->
+                <div id="auth-section">
+                    <!-- Shown when logged OUT -->
+                    <button id="login-button" class="auth-button golden-orange-button">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12" cy="7" r="4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>Sign In</span>
+                    </button>
+
+                    <!-- Shown when logged IN -->
+                    <div id="user-profile" class="user-profile hidden">
+                        <div class="avatar-initials" id="user-avatar-initials"></div>
+                        <span id="user-email-display"></span>
+                        <button id="logout-button" class="logout-btn" title="Sign Out">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="#F5B700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <!-- END AUTH SECTION -->
+
+                <button class="cart-button golden-orange-button">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="3" y1="6" x2="21" y2="6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16 10a4 4 0 01-8 0" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Cart</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================== AUTH MODAL ==================== -->
+    <div id="auth-modal" class="modal-window">
+        <div class="modal-overlay" id="auth-overlay"></div>
+        <div class="modal-box">
+
+            <!-- Close button -->
+            <button class="modal-close-btn" id="close-auth-modal">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18M6 6l12 12" stroke="#F5B700" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+            </button>
+
+            <div class="modal-header">
+                <div class="golden-orange-circle"></div>
+                <div>
+                    <h2 id="modal-title">Welcome Back</h2>
+                    <p id="modal-subtitle">Sign in to continue shopping</p>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="auth-tabs">
+                <button class="tab-btn active" id="tab-signin">Sign In</button>
+                <button class="tab-btn" id="tab-signup">Create Account</button>
+            </div>
+
+            <!-- Message banner -->
+            <div id="auth-message" class="auth-message hidden"></div>
+
+            <!-- SIGN IN PANEL -->
+            <div id="panel-signin" class="auth-panel active">
+                <form id="signin-form">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <div class="input-icon">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="#bbb" stroke-width="2"/><polyline points="22,6 12,13 2,6" stroke="#bbb" stroke-width="2"/></svg>
+                            <input type="email" id="signin-email" placeholder="john@example.com" required />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-icon">
+                            <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="#bbb" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="#bbb" stroke-width="2"/></svg>
+                            <input type="password" id="signin-password" placeholder="••••••••" required />
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-submit-btn golden-orange-button" id="signin-btn">
+                        Sign In
+                    </button>
+                </form>
+
+                <div class="auth-divider"><span>or</span></div>
+
+                <button class="google-btn" id="google-signin-btn">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Continue with Google
+                </button>
+
+                <p class="auth-footer-note">Secure login powered by Supabase</p>
+            </div>
+
+            <!-- SIGN UP PANEL -->
+            <div id="panel-signup" class="auth-panel">
+                <form id="signup-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <div class="input-icon">
+                                <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#bbb" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7" r="4" stroke="#bbb" stroke-width="2"/></svg>
+                                <input type="text" id="signup-first-name" placeholder="John" required />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <div class="input-icon">
+                                <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#bbb" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7" r="4" stroke="#bbb" stroke-width="2"/></svg>
+                                <input type="text" id="signup-last-name" placeholder="Doe" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <div class="input-icon">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="#bbb" stroke-width="2"/><polyline points="22,6 12,13 2,6" stroke="#bbb" stroke-width="2"/></svg>
+                            <input type="email" id="signup-email" placeholder="john@example.com" required />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <div class="input-icon">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.07 1.18 2 2 0 012.03 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z" stroke="#bbb" stroke-width="2"/></svg>
+                            <input type="tel" id="signup-phone" placeholder="+254 712 345 678" required />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Delivery Location</label>
+                        <div class="input-icon">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="#bbb" stroke-width="2"/><circle cx="12" cy="10" r="3" stroke="#bbb" stroke-width="2"/></svg>
+                            <input type="text" id="signup-location" placeholder="e.g. Westlands, Nairobi" required />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Create Password</label>
+                        <div class="input-icon">
+                            <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="#bbb" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="#bbb" stroke-width="2"/></svg>
+                            <input type="password" id="signup-password" placeholder="Min. 6 characters" required />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <div class="input-icon">
+                            <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="#bbb" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="#bbb" stroke-width="2"/></svg>
+                            <input type="password" id="signup-confirm-password" placeholder="Re-enter password" required />
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-submit-btn golden-orange-button" id="signup-btn">
+                        Create Account
+                    </button>
+                </form>
+                <p class="auth-footer-note">Secure signup powered by Supabase</p>
+            </div>
+
+        </div>
+    </div>
+    <!-- END AUTH MODAL -->
+
+    <!-- MAIN BODY -->
+    <div id="main-body">
+
+        <!--SHOPPING CART-->
+        <div id="cart-window">
+            <div class="overlay"></div>
+            <div id="cart-box">
+                <div class="heading">
+                    <div class="title-circle-container">
+                        <div class="golden-orange-circle"></div>
+                        <div>
+                            <h1>My Order</h1>
+                            <p>Quick Delivery</p>
+                        </div>
+                    </div>
+                    <button class="close-button">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 6L6 18M6 6l12 12" stroke="#F5B700" stroke-width="2.5" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+                <div id="cart-items-container">
+                    <span class="empty-cart-message">Your cart is empty. Order an item.</span>
+                    <div class="white-fade-overflow top"></div>
+                    <ul></ul>
+                    <div class="white-fade-overflow bottom"></div>
+                </div>
+                <div id="cart-checkout">
+                    <div id="total-checkout">
+                        <p>Total</p>
+                        <span class="price">KES0.00</span>
+                    </div>
+                    <button id="checkout-button" class="golden-orange-button">
+                        Checkout
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!--CUSTOMER DETAILS FORM-->
+        <div id="customer-details-window">
+            <div class="overlay"></div>
+            <div id="customer-details-box">
+                <div class="form-nav-row">
+                    <button class="back-button" id="back-to-cart">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 12H5M5 12l7 7M5 12l7-7" stroke="#F5B700" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Back to My Order
+                    </button>
+                    <button class="close-button" id="close-customer-form">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 6L6 18M6 6l12 12" stroke="#F5B700" stroke-width="2.5" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="heading">
+                    <div class="title-circle-container">
+                        <div class="golden-orange-circle"></div>
+                        <div>
+                            <h1>Delivery Details</h1>
+                            <p>Please fill in your information</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="customer-form-container">
+                    <form id="customerDetailsForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="first-name">First Name</label>
+                                <input type="text" id="first-name" placeholder="John" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="last-name">Last Name</label>
+                                <input type="text" id="last-name" placeholder="Doe" required />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email-address">Email Address</label>
+                            <input type="email" id="email-address" placeholder="john@example.com" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-phone-number">Phone Number</label>
+                            <input type="tel" id="customer-phone-number" placeholder="+254 712 345 678" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="delivery-address">Delivery Destination/Location</label>
+                            <textarea id="delivery-address" rows="3" placeholder="Enter your full delivery address..." required></textarea>
+                        </div>
+                        <div class="form-group order-summary">
+                            <label>Order Total</label>
+                            <div id="order-total-display" class="price">KES0.00</div>
+                        </div>
+                        <button type="submit" class="golden-orange-button pay-button">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 4h22l-2 13H3L1 4z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M8 22h8M12 18v4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Proceed to Payment
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- HERO -->
+        <div id="hero-section">
+            <div class="hero-text">
+                <span class="hero-tag">🌞 Clean Energy Solutions</span>
+                <h1>Power Your World <br>With <span class="gradient-text">Solar Energy</span></h1>
+                <p>Affordable, reliable solar products delivered to your door step. Start saving on electricity today.</p>
+                <button class="golden-orange-button hero-btn" onclick="document.getElementById('product-container').scrollIntoView({behavior:'smooth'})">Shop Now</button>
+            </div>
+            <div class="hero-image">
+                <div class="hero-glow"></div>
+                <div class="hero-icon">☀️</div>
+            </div>
+        </div>
+
+        <div id="menu-choices">
+            <ul>
+                <li class="active"><span>All Products</span></li>
+                <li><span>Solar Panels</span></li>
+                <li><span>Solar Batteries</span></li>
+                <li><span>Water Heaters</span></li>
+                <li><span>Solar Inverters</span></li>
+                <li><span>Solar Kits</span></li>
+                <li><span>Lighting</span></li>
+                <li><span>Solar Parts</span></li>
+            </ul>
+        </div>
+
+        <div id="product-container">
+            <div class="title-circle-container">
+                <div class="golden-orange-circle"></div>
+                <h1>Products</h1>
+            </div>
+            <ul class="product-list">
+                <li>
+                    <div class="image-container"><div class="product-emoji">☀️</div></div>
+                    <div class="product-text">
+                        <p class="title">Solar Panel</p>
+                        <p class="price">KES5</p>
+                        <button class="order-button golden-orange-button">Add to Cart</button>
+                    </div>
+                </li>
+                <li>
+                    <div class="image-container"><div class="product-emoji">🔋</div></div>
+                    <div class="product-text">
+                        <p class="title">Solar Battery</p>
+                        <p class="price">KES4500</p>
+                        <button class="order-button golden-orange-button">Add to Cart</button>
+                    </div>
+                </li>
+                <li>
+                    <div class="image-container"><div class="product-emoji">🚿</div></div>
+                    <div class="product-text">
+                        <p class="title">Solar Water Heater</p>
+                        <p class="price">KES6500</p>
+                        <button class="order-button golden-orange-button">Add to Cart</button>
+                    </div>
+                </li>
+                <li>
+                    <div class="image-container"><div class="product-emoji">📦</div></div>
+                    <div class="product-text">
+                        <p class="title">Solar Kit Premium</p>
+                        <p class="price">KES45000</p>
+                        <button class="order-button golden-orange-button">Add to Cart</button>
+                    </div>
+                </li>
+                <li>
+                    <div class="image-container"><div class="product-emoji">⚡</div></div>
+                    <div class="product-text">
+                        <p class="title">Solar Inverter</p>
+                        <p class="price">KES8500</p>
+                        <button class="order-button golden-orange-button">Add to Cart</button>
+                    </div>
+                </li>
+                <li>
+                    <div class="image-container"><div class="product-emoji">💡</div></div>
+                    <div class="product-text">
+                        <p class="title">Solar Kit Lite</p>
+                        <p class="price">KES35000</p>
+                        <button class="order-button golden-orange-button">Add to Cart</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- CSS for Bottom Left WhatsApp Button -->
+<style>
+/* Paste the ENTIRE CSS code from above here */
+</style>
+
+<!-- HTML Widget -->
+<div id="whatsapp-widget" class="whatsapp-widget-container" style="position: fixed; bottom: 25px; left: 25px; z-index: 9999;">
+    <button id="whatsapp-toggle-btn" class="whatsapp-chat-btn" style="width: 60px; height: 60px; background-color: #25D366; border-radius: 50%; border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+        <svg viewBox="0 0 448 512" fill="currentColor" style="width: 28px; height: 28px;">
+            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+        </svg>
+    </button>
+
+    <div id="whatsapp-panel" style="display: none; position: absolute; bottom: 75px; left: 0; width: 300px; background: white; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.1), 0 2px 5px rgba(0,0,0,0.05); overflow: hidden;">
+        <div style="background: #075E54; color: white; padding: 15px; position: relative;">
+            <h4 style="margin: 0; font-size: 14px;">MySolarShop Support</h4>
+            <small style="opacity: 0.8;">Online</small>
+            <button id="whatsapp-close-btn" style="position: absolute; right: 15px; top: 12px; background: none; border: none; color: white; font-size: 20px; cursor: pointer;">&times;</button>
+        </div>
+        <div style="padding: 15px; background: #e5ddd5; min-height: 80px; font-size: 13px;">
+            <div style="background: white; padding: 8px 12px; border-radius: 0 8px 8px 8px; display: inline-block; max-width: 90%;">
+                Hello! 👋 How can we help you with your solar needs today?
+            </div>
+        </div>
+        <div style="padding: 10px; background: #f0f0f0; text-align: center;">
+            <a href="https://wa.me/254112485488?text=Hi%20MySolarShop!%20I%20want%20to%20inquire%20about%20your%20solar%20products." 
+               target="_blank" 
+               style="display: block; background: #25D366; color: white; text-decoration: none; padding: 8px; border-radius: 4px; font-size: 13px; font-weight: 600;">
+               Start Chat
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleBtn = document.getElementById('whatsapp-toggle-btn');
+        const panel = document.getElementById('whatsapp-panel');
+        const closeBtn = document.getElementById('whatsapp-close-btn');
+        
+        if (!toggleBtn || !panel) return;
+
+        function openPanel() {
+            panel.style.display = 'block';
+        }
+        
+        function closePanel() {
+            panel.style.display = 'none';
+        }
+        
+        function togglePanel() {
+            if (panel.style.display === 'block') {
+                closePanel();
+            } else {
+                openPanel();
+            }
+        }
+        
+        toggleBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            togglePanel();
+        });
+        
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                closePanel();
+            });
+        }
+        
+        // Close when clicking empty screen space
+        document.addEventListener('click', function(event) {
+            const widget = document.getElementById('whatsapp-widget');
+            if (widget && !widget.contains(event.target)) {
+                closePanel();
+            }
+        });
+
+        // Testing override: Force open panel 2 seconds after load
+        setTimeout(function() {
+            openPanel();
+        }, 2000); 
+    });
+})();
+</script>
+
+<!-- ==================== MPESA STATUS MODAL ==================== -->
+<div id="mpesa-status-modal" class="mpesa-modal-window">
+    <div class="mpesa-modal-overlay"></div>
+    <div class="mpesa-modal-box">
+
+        <!-- WAITING STATE -->
+        <div id="mpesa-state-waiting" class="mpesa-state active">
+            <div class="mpesa-icon-ring">
+                <div class="mpesa-spinner-ring"></div>
+                <div class="mpesa-phone-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="5" y="2" width="14" height="20" rx="2" stroke="#F5A800" stroke-width="2"/>
+                        <circle cx="12" cy="18" r="1" fill="#F5A800"/>
+                        <line x1="9" y1="6" x2="15" y2="6" stroke="#F5A800" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </div>
+            </div>
+            <h2>Check Your Phone</h2>
+            <p class="mpesa-subtitle">An M-Pesa prompt has been sent to</p>
+            <div class="mpesa-phone-display" id="mpesa-display-phone">0712 345 678</div>
+            <p class="mpesa-instruction">Enter your <strong>M-Pesa PIN</strong> on your phone to complete the payment.</p>
+            <div class="mpesa-amount-badge">
+                <span class="mpesa-amount-label">Amount</span>
+                <span class="mpesa-amount-value" id="mpesa-display-amount">KES 0.00</span>
+            </div>
+            <div class="mpesa-timer-bar">
+                <div class="mpesa-timer-fill" id="mpesa-timer-fill"></div>
+            </div>
+            <p class="mpesa-timer-note">Waiting for confirmation…</p>
+        </div>
+
+        <!-- SUCCESS STATE -->
+        <div id="mpesa-state-success" class="mpesa-state">
+            <div class="mpesa-icon-circle success">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 13l4 4L19 7" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <h2>Payment Successful!</h2>
+            <p class="mpesa-subtitle">Your order has been confirmed. We'll be in touch shortly about your delivery.</p>
+            <div class="mpesa-success-details">
+                <div class="mpesa-detail-row">
+                    <span>Amount Paid</span>
+                    <span id="mpesa-success-amount">KES 0.00</span>
+                </div>
+                <div class="mpesa-detail-row">
+                    <span>Payment Method</span>
+                    <span>M-Pesa STK Push</span>
+                </div>
+            </div>
+            <button class="mpesa-done-btn golden-orange-button" id="mpesa-done-btn">Done</button>
+        </div>
+
+        <!-- FAILURE STATE -->
+        <div id="mpesa-state-failure" class="mpesa-state">
+            <div class="mpesa-icon-circle failure">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18M6 6l12 12" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h2>Payment Failed</h2>
+            <p class="mpesa-subtitle" id="mpesa-error-message">Something went wrong. Please try again.</p>
+            <button class="mpesa-retry-btn golden-orange-button" id="mpesa-retry-btn">Try Again</button>
+            <button class="mpesa-cancel-link" id="mpesa-cancel-btn">Cancel</button>
+        </div>
+
+    </div>
+</div>
+<!-- END MPESA STATUS MODAL -->
+
+<!-- JavaScript -->
+<script>
+(function() {
+    'use strict';
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleBtn = document.getElementById('whatsapp-toggle');
+        const panel = document.getElementById('whatsapp-panel');
+        const closeBtn = document.getElementById('close-panel');
+        
+        if (!toggleBtn || !panel || !closeBtn) {
+            console.error('WhatsApp widget elements not found');
+            return;
+        }
+        
+        function openPanel() {
+            panel.classList.add('active');
+            console.log('WhatsApp panel opened');
+        }
+        
+        function closePanel() {
+            panel.classList.remove('active');
+            console.log('WhatsApp panel closed');
+        }
+        
+        function togglePanel() {
+            if (panel.classList.contains('active')) {
+                closePanel();
+            } else {
+                openPanel();
+            }
+        }
+        
+        toggleBtn.addEventListener('click', togglePanel);
+        closeBtn.addEventListener('click', closePanel);
+        
+        document.addEventListener('click', function(event) {
+            const widget = document.getElementById('whatsapp-widget');
+            if (widget && !widget.contains(event.target)) {
+                closePanel();
+            }
+        });
+        
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && panel.classList.contains('active')) {
+                closePanel();
+            }
+        });
+        
+        const whatsappLink = document.querySelector('.whatsapp-chat-btn');
+        if (whatsappLink) {
+            whatsappLink.addEventListener('click', function() {
+                console.log('WhatsApp chat initiated');
+            });
+        }
+        
+        console.log('WhatsApp widget initialized - Bottom Left position');
+    });
+})();
+</script>
+</body>
+</html>
